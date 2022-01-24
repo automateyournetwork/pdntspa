@@ -1,38 +1,48 @@
 # pdntspa
 Please Do Not Throw Sausage Pizza Away - Side Scrolling Up The OSI Stack
 
-## Installation
+## Installation for Windows 10 - From Source
 
 ### Create virtual environment
 
-``` python
+``` console
 
-python3 -m venv please
+pip install virtualenv
+
+virtualenv please
 
 ```
 
 ### Activate virtual environment
 
-``` python
+``` console
 
-source please/bin/activate
+\please\env\Scripts\activiate
 
 ```
 
 ### Install libraries 
 
-``` python
+``` console
 
-pip install pygame
-sudo apt-get install python3-tk
+(please) C:\pip install pygame
+
+```
+
+### Clone the Repository
+
+``` console
+
+(please) C:\git clone https://github.com/automateyournetwork/pdntspa.git
 
 ```
 
 ### Run The Game
 
-``` python
+``` console
 
-python3 PDNTSPA.py
+(please) C:\cd pdntspa\PDNTSPA
+(please) C:\pdntspa\PDNTSPA\python PDNTSPA.py
 
 ```
 
