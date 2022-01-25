@@ -17,7 +17,7 @@ virtualenv please
 
 ``` console
 
-\please\env\Scripts\activiate
+\please\env\Scripts\activate
 
 ```
 
