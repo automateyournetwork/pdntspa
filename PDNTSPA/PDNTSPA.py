@@ -162,8 +162,8 @@ class Player(pygame.sprite.Sprite):
                       self.vel.y = 0
                       self.jumping = False
  
- 
     def update(self):
+          if cursor.wait == 1: return
           # Return to base frame if at end of movement sequence 
           if self.move_frame > 6:
                 self.move_frame = 0
@@ -187,7 +187,8 @@ class Player(pygame.sprite.Sprite):
                 elif self.direction == "LEFT":
                       self.image = run_ani_L[self.move_frame]
  
-    def attack(self):        
+    def attack(self):
+          if cursor.wait == 1: return        
           # If attack frame has reached end of sequence, return to base frame      
           if self.attack_frame > 10:
                 self.attack_frame = 0
@@ -260,6 +261,7 @@ class Enemy(pygame.sprite.Sprite):
             self.pos.y = 235
  
       def move(self):
+        if cursor.wait == 1: return
         # Causes the enemy to change directions upon reaching the end of screen    
         if self.pos.x >= (WIDTH-20):
               self.direction = 1
@@ -275,6 +277,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.center = self.pos # Updates rect
                 
       def update(self):
+            if cursor.wait == 1: return
             # Checks for collision with the Player
             hits = pygame.sprite.spritecollide(self, Playergroup, False)
             #print("fff")
@@ -366,28 +369,36 @@ class EventHandler():
       def world1(self):
             self.root.destroy()
             pygame.time.set_timer(self.enemy_generation, 2000)
+            button.imgdisp = 1
             castle.hide = True
             self.battle = True
  
       def world2(self):
             self.battle = True
+            button.imgdisp = 1
              
       def world3(self):
             self.battle = True
+            button.imgdisp = 1
   
       def world4(self):
             self.battle = True
+            button.imgdisp = 1
 
       def world5(self):
             self.battle = True
+            button.imgdisp = 1
 
       def world6(self):
             self.battle = True
+            button.imgdisp = 1
 
       def world7(self):
-            self.battle = True            
+            self.battle = True
+            button.imgdisp = 1            
 
       def next_stage(self):  # Code for when the next stage is clicked            
+            button.imgdisp = 1
             self.stage += 1
             print("Stage: "  + str(self.stage))
             self.enemy_count = 0
@@ -399,6 +410,28 @@ class EventHandler():
                   self.dead_enemy_count = 0
                   stage_display.clear = True
                   stage_display.stage_clear()
+
+      def home(self):
+            # Reset Battle code
+            pygame.time.set_timer(self.enemy_generation, 0)
+            self.battle = False
+            self.enemy_count = 0
+            self.dead_enemy_count = 0
+            self.stage = 1
+ 
+            # Destroy any enemies or items lying around
+            for group in Enemies, Items:
+                  for entity in group:
+                        entity.kill()
+             
+            # Bring back normal backgrounds
+            castle.hide = False
+            background.bgimage = pygame.image.load("images/Backgrounds/Background.png")
+            ground.image = pygame.image.load("images/Grounds/Ground.png")
+
+      def next_stage(self):  # Code for when the next stage is clicked
+            button.imgdisp = 1
+            self.stage += 1
 
 class HealthBar(pygame.sprite.Sprite):
       def __init__(self):
@@ -431,6 +464,7 @@ class StageDisplay(pygame.sprite.Sprite):
 
       def stage_clear(self):
             self.text = headingfont.render("STAGE CLEAR!", True , color_dark)
+            button.imgdisp = 0
             if self.posx < 720:
                   self.posx += 10
                   displaysurface.blit(self.text, (self.posx, self.posy))
@@ -485,6 +519,44 @@ class Item(pygame.sprite.Sprite):
                         # handler.money += 1
                         self.kill()
 
+class PButton(pygame.sprite.Sprite):
+      def __init__(self):
+            super().__init__()
+            self.vec = vec(620, 300)
+            self.imgdisp = 0
+ 
+      def render(self, num):
+            if (num == 0):
+                  self.image = pygame.image.load("images/Buttons/home_small.png")
+            elif (num == 1):
+                  if cursor.wait == 0:
+                        self.image = pygame.image.load("images/Buttons/pause_small.png")
+                  else:
+                        self.image = pygame.image.load("images/Buttons/play_small.png")
+                                     
+            displaysurface.blit(self.image, self.vec)
+
+class Cursor(pygame.sprite.Sprite):
+      def __init__(self):
+            super().__init__()
+            self.image = pygame.image.load("images/Buttons/cursor.png")
+            self.rect = self.image.get_rect()
+            self.wait = 0
+ 
+      def pause(self):
+            if self.wait == 1:
+                  self.wait = 0
+            else:
+                  self.wait = 1
+ 
+      def hover(self):
+          if 620 <= mouse[0] <= 660 and 300 <= mouse[1] <= 345:
+                pygame.mouse.set_visible(False)
+                cursor.rect.center = pygame.mouse.get_pos()  # update position 
+                displaysurface.blit(cursor.image, cursor.rect)
+          else:
+                pygame.mouse.set_visible(True)
+
 Enemies = pygame.sprite.Group()
  
 player = Player()
@@ -492,7 +564,8 @@ Playergroup = pygame.sprite.Group()
 Playergroup.add(player)
  
 background = Background()
- 
+button = PButton()
+cursor = Cursor() 
 ground = Ground()
 ground_group = pygame.sprite.Group()
 ground_group.add(ground)
@@ -509,6 +582,7 @@ hit_cooldown = pygame.USEREVENT + 1
  
 while True:
     player.gravity_check()
+    mouse = pygame.mouse.get_pos()
    
     for event in pygame.event.get():
         if event.type == hit_cooldown:
@@ -528,10 +602,14 @@ while True:
              
         # For events that occur upon clicking the mouse (left click) 
         if event.type == pygame.MOUSEBUTTONDOWN:
-              pass
+            if 620 <= mouse[0] <= 670 and 300 <= mouse[1] <= 345:
+                  if button.imgdisp == 1:
+                        cursor.pause()
+                  elif button.imgdisp == 0:
+                        handler.home()
  
          # Event handling for a range of different key presses    
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN and cursor.wait == 0:
             if event.key == pygame.K_n:
                   if handler.battle == True and len(Enemies) == 0:
                         handler.next_stage()
@@ -556,7 +634,9 @@ while True:
     # Display and Background related functions         
     background.render()
     ground.render()
- 
+    button.render(button.imgdisp)
+    cursor.hover()
+
     # Rendering Sprites
     castle.update()
     if player.health > 0:
