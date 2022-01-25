@@ -77,7 +77,6 @@ class Background(pygame.sprite.Sprite):
       def render(self):
             displaysurface.blit(self.bgimage, (self.bgX, self.bgY))      
  
- 
 class Ground(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -286,6 +285,7 @@ class Enemy(pygame.sprite.Sprite):
                   player.experiance += 1   # Release expeiriance
                   print("Enemy Killed")
                   self.kill()
+                  handler.dead_enemy_count += 1
  
             # If collision has occured and player not attacking, call "hit" function            
             elif hits and player.attacking == False:
@@ -310,6 +310,7 @@ class Castle(pygame.sprite.Sprite):
 class EventHandler():
       def __init__(self):
             self.enemy_count = 0
+            self.dead_enemy_count = 0
             self.battle = False
             self.enemy_generation = pygame.USEREVENT + 1
             self.stage = 1
@@ -376,8 +377,15 @@ class EventHandler():
             self.stage += 1
             print("Stage: "  + str(self.stage))
             self.enemy_count = 0
+            self.dead_enemy_count = 0
             pygame.time.set_timer(self.enemy_generation, 1500 - (50 * self.stage))      
- 
+
+      def update(self):
+            if self.dead_enemy_count == self.stage_enemies[self.stage - 1]:
+                  self.dead_enemy_count = 0
+                  stage_display.clear = True
+                  stage_display.stage_clear()
+
 class HealthBar(pygame.sprite.Sprite):
       def __init__(self):
             super().__init__()
@@ -394,16 +402,28 @@ class StageDisplay(pygame.sprite.Sprite):
             self.posx = -100
             self.posy = 100
             self.display = False
+            self.clear = False
 
       def move_display(self):
             # Create the text to be displayed
             self.text = headingfont.render("STAGE: " + str(handler.stage) , True , color_dark)
-            if self.posx < 700:
+            if self.posx < 720:
                   self.posx += 5
                   displaysurface.blit(self.text, (self.posx, self.posy))
             else:
                   self.display = False
-                  self.kill()
+                  self.posx = -100
+                  self.posy = 100
+
+      def stage_clear(self):
+            self.text = headingfont.render("STAGE CLEAR!", True , color_dark)
+            if self.posx < 720:
+                  self.posx += 10
+                  displaysurface.blit(self.text, (self.posx, self.posy))
+            else:
+                  self.clear = False
+                  self.posx = -100
+                  self.posy = 100
 
 class StatusBar(pygame.sprite.Sprite):
       def __init__(self):
@@ -503,6 +523,7 @@ while True:
     # Status bar update and render
     displaysurface.blit(status_bar.surf, (580, 5))
     status_bar.update_draw()
+    handler.update()
 
     for entity in Enemies:
           entity.update()
@@ -511,7 +532,9 @@ while True:
 
     # Render stage display
     if stage_display.display == True:
-          stage_display.move_display()           
+          stage_display.move_display()
+    if stage_display.clear == True:
+          stage_display.stage_clear()          
 
     pygame.display.update()      
     FPS_CLOCK.tick(FPS)
