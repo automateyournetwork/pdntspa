@@ -5,7 +5,8 @@ import random
 import time
 from tkinter import filedialog
 from tkinter import *
- 
+import numpy
+
 pygame.init()  # Begin pygame
  
 # Declaring variables to be used through the program
@@ -258,7 +259,6 @@ class Enemy(pygame.sprite.Sprite):
             self.pos.x = 700
             self.pos.y = 235
  
- 
       def move(self):
         # Causes the enemy to change directions upon reaching the end of screen    
         if self.pos.x >= (WIDTH-20):
@@ -286,11 +286,25 @@ class Enemy(pygame.sprite.Sprite):
                   print("Enemy Killed")
                   self.kill()
                   handler.dead_enemy_count += 1
- 
+                  # Item drop number 
+                  rand_num = numpy.random.uniform(0, 100)
+                  item_no = 0
+                  if rand_num >= 0 and rand_num <= 50:  # 1 / 20 chance for an item (health) drop
+                        item_no = 1
+                  elif rand_num > 51 and rand_num <= 100:
+                        item_no = 2                   
+                  if item_no != 0:
+                        # Add Item to Items group
+                        item = Item(item_no)
+                        Items.add(item)
+                        # Sets the item location to the location of the killed enemy
+                        item.posx = self.pos.x
+                        item.posy = self.pos.y
+
             # If collision has occured and player not attacking, call "hit" function            
             elif hits and player.attacking == False:
                   player.player_hit()
-                   
+
       def render(self):
             # Displayed the enemy on screen
             displaysurface.blit(self.image, (self.pos.x, self.pos.y))
@@ -444,6 +458,33 @@ class StatusBar(pygame.sprite.Sprite):
             displaysurface.blit(text3, (585, 37))
             displaysurface.blit(text4, (585, 52))
 
+class Item(pygame.sprite.Sprite):
+      def __init__(self, itemtype):
+            super().__init__()
+            if itemtype == 1: self.image = pygame.image.load("images/Items/heart.png")
+            elif itemtype == 2: self.image = pygame.image.load("images/Items/coin.png")
+            self.rect = self.image.get_rect()
+            self.type = itemtype
+            self.posx = 0
+            self.posy = 0
+
+      def render(self):
+            self.rect.x = self.posx
+            self.rect.y = self.posy
+            displaysurface.blit(self.image, self.rect)            
+
+      def update(self):
+            hits = pygame.sprite.spritecollide(self, Playergroup, False)
+            # Code to be activated if item comes in contact with player
+            if hits:
+                  if player.health < 5 and self.type == 1:
+                        player.health += 1
+                        health.image = health_ani[player.health]
+                        self.kill()
+                  if self.type == 2:
+                        # handler.money += 1
+                        self.kill()
+
 Enemies = pygame.sprite.Group()
  
 player = Player()
@@ -461,6 +502,8 @@ handler = EventHandler()
 stage_display = StageDisplay() 
 health = HealthBar()
 status_bar = StatusBar()
+
+Items = pygame.sprite.Group()
 
 hit_cooldown = pygame.USEREVENT + 1
  
@@ -535,6 +578,11 @@ while True:
           stage_display.move_display()
     if stage_display.clear == True:
           stage_display.stage_clear()          
+
+    # Render Items
+    for i in Items:
+          i.render()
+          i.update()
 
     pygame.display.update()      
     FPS_CLOCK.tick(FPS)

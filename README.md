@@ -26,6 +26,7 @@ virtualenv please
 ``` console
 
 (please) C:\pip install pygame
+(please) C:\pip install numpy
 
 ```
 
