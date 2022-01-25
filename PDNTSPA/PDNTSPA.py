@@ -331,7 +331,14 @@ class EventHandler():
             self.dead_enemy_count = 0
             self.battle = False
             self.enemy_generation = pygame.USEREVENT + 1
+            self.enemy_generation2 = pygame.USEREVENT + 2
+            self.enemy_generation3 = pygame.USEREVENT + 3
+            self.enemy_generation4 = pygame.USEREVENT + 4
+            self.enemy_generation5 = pygame.USEREVENT + 5
+            self.enemy_generation6 = pygame.USEREVENT + 6
+            self.enemy_generation7 = pygame.USEREVENT + 7
             self.stage = 1
+            self.world = 0
  
             self.stage_enemies = []
             for x in range(1, 21):
@@ -369,14 +376,23 @@ class EventHandler():
        
       def world1(self):
             self.root.destroy()
-            pygame.time.set_timer(self.enemy_generation, 2000)
+            background.bgimage = pygame.image.load("images/Backgrounds/Background02.png")
+            ground.image = pygame.image.load("images/Grounds/Ground02.png")
+            pygame.time.set_timer(self.enemy_generation, 1000)
             button.imgdisp = 1
             castle.hide = True
             self.battle = True
+            self.world = 1
  
       def world2(self):
-            self.battle = True
+            self.root.destroy()
+            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
+            ground.image = pygame.image.load("images/Grounds/desert_ground.png")
+            pygame.time.set_timer(self.enemy_generation2, 2000)
             button.imgdisp = 1
+            castle.hide = True
+            self.battle = True
+            self.world = 2
              
       def world3(self):
             self.battle = True
@@ -404,7 +420,10 @@ class EventHandler():
             print("Stage: "  + str(self.stage))
             self.enemy_count = 0
             self.dead_enemy_count = 0
-            pygame.time.set_timer(self.enemy_generation, 1500 - (50 * self.stage))      
+            if self.world == 1:
+                  pygame.time.set_timer(self.enemy_generation, 1500 - (50 * self.stage))
+            elif self.world == 2:
+                  pygame.time.set_timer(self.enemy_generation2, 1500 - (50 * self.stage))
 
       def update(self):
             if self.dead_enemy_count == self.stage_enemies[self.stage - 1]:
@@ -415,6 +434,7 @@ class EventHandler():
       def home(self):
             # Reset Battle code
             pygame.time.set_timer(self.enemy_generation, 0)
+            pygame.time.set_timer(self.enemy_generation2, 0)
             self.battle = False
             self.enemy_count = 0
             self.dead_enemy_count = 0
@@ -664,7 +684,10 @@ while True:
                        player.attacking = True
                        fireball = FireBall()
                        Fireballs.add(fireball)
- 
+            if event.type == handler.enemy_generation2:
+                if handler.enemy_count < handler.stage_enemies[handler.stage - 1]:
+                      pass
+
     # Player related functions
     player.update()
     if player.attacking == True:
