@@ -21,46 +21,55 @@ COUNT = 0
 # Create the display
 displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Please Do Not Throw Sausage Pizza Away")
- 
- 
+
+# defining font styles
+headingfont = pygame.font.SysFont("Verdana", 40)
+regularfont = pygame.font.SysFont('Corbel',25)
+smallerfont = pygame.font.SysFont('Corbel',16)
+
+# Colours
+color_light = (170,170,170)
+color_dark = (100,100,100)
+color_white = (255,255,255) 
+
 # Run animation for the RIGHT
-run_ani_R = [pygame.image.load("images/Player_Sprite_R.png"), pygame.image.load("images/Player_Sprite2_R.png"),
-             pygame.image.load("images/Player_Sprite3_R.png"),pygame.image.load("images/Player_Sprite4_R.png"),
-             pygame.image.load("images/Player_Sprite5_R.png"),pygame.image.load("images/Player_Sprite6_R.png"),
-             pygame.image.load("images/Player_Sprite_R.png")]
+run_ani_R = [pygame.image.load("images/Sprite/Player_Sprite_R.png"), pygame.image.load("images/Sprite/Player_Sprite_R2.png"),
+             pygame.image.load("images/Sprite/Player_Sprite_R3.png"),pygame.image.load("images/Sprite/Player_Sprite_R4.png"),
+             pygame.image.load("images/Sprite/Player_Sprite_R5.png"),pygame.image.load("images/Sprite/Player_Sprite_R6.png"),
+             pygame.image.load("images/Sprite/Player_Sprite_R.png")]
  
 # Run animation for the LEFT
-run_ani_L = [pygame.image.load("images/Player_Sprite_L.png"), pygame.image.load("images/Player_Sprite2_L.png"),
-             pygame.image.load("images/Player_Sprite3_L.png"),pygame.image.load("images/Player_Sprite4_L.png"),
-             pygame.image.load("images/Player_Sprite5_L.png"),pygame.image.load("images/Player_Sprite6_L.png"),
-             pygame.image.load("images/Player_Sprite_L.png")]
+run_ani_L = [pygame.image.load("images/Sprite/Player_Sprite_L.png"), pygame.image.load("images/Sprite/Player_Sprite_L2.png"),
+             pygame.image.load("images/Sprite/Player_Sprite_L3.png"),pygame.image.load("images/Sprite/Player_Sprite_L4.png"),
+             pygame.image.load("images/Sprite/Player_Sprite_L5.png"),pygame.image.load("images/Sprite/Player_Sprite_L6.png"),
+             pygame.image.load("images/Sprite/Player_Sprite_L.png")]
  
 # Attack animation for the RIGHT
-attack_ani_R = [pygame.image.load("images/Player_Sprite_R.png"), pygame.image.load("images/Player_Attack_R.png"),
-                pygame.image.load("images/Player_Attack2_R.png"),pygame.image.load("images/Player_Attack2_R.png"),
-                pygame.image.load("images/Player_Attack3_R.png"),pygame.image.load("images/Player_Attack3_R.png"),
-                pygame.image.load("images/Player_Attack4_R.png"),pygame.image.load("images/Player_Attack4_R.png"),
-                pygame.image.load("images/Player_Attack5_R.png"),pygame.image.load("images/Player_Attack5_R.png"),
-                pygame.image.load("images/Player_Sprite_R.png")]
+attack_ani_R = [pygame.image.load("images/Attack/Player_Attack_R.png"), pygame.image.load("images/Attack/Player_Attack_R.png"),
+                pygame.image.load("images/Attack/Player_Attack2_R.png"),pygame.image.load("images/Attack/Player_Attack2_R.png"),
+                pygame.image.load("images/Attack/Player_Attack3_R.png"),pygame.image.load("images/Attack/Player_Attack3_R.png"),
+                pygame.image.load("images/Attack/Player_Attack4_R.png"),pygame.image.load("images/Attack/Player_Attack4_R.png"),
+                pygame.image.load("images/Attack/Player_Attack5_R.png"),pygame.image.load("images/Attack/Player_Attack5_R.png"),
+                pygame.image.load("images/Sprite/Player_Sprite_R.png")]
  
 # Attack animation for the LEFT
-attack_ani_L = [pygame.image.load("images/Player_Sprite_L.png"), pygame.image.load("images/Player_Attack_L.png"),
-                pygame.image.load("images/Player_Attack2_L.png"),pygame.image.load("images/Player_Attack2_L.png"),
-                pygame.image.load("images/Player_Attack3_L.png"),pygame.image.load("images/Player_Attack3_L.png"),
-                pygame.image.load("images/Player_Attack4_L.png"),pygame.image.load("images/Player_Attack4_L.png"),
-                pygame.image.load("images/Player_Attack5_L.png"),pygame.image.load("images/Player_Attack5_L.png"),
-                pygame.image.load("images/Player_Sprite_L.png")]
+attack_ani_L = [pygame.image.load("images/Attack/Player_Attack_L.png"), pygame.image.load("images/Attack/Player_Attack_L.png"),
+                pygame.image.load("images/Attack/Player_Attack2_L.png"),pygame.image.load("images/Attack/Player_Attack2_L.png"),
+                pygame.image.load("images/Attack/Player_Attack3_L.png"),pygame.image.load("images/Attack/Player_Attack3_L.png"),
+                pygame.image.load("images/Attack/Player_Attack4_L.png"),pygame.image.load("images/Attack/Player_Attack4_L.png"),
+                pygame.image.load("images/Attack/Player_Attack5_L.png"),pygame.image.load("images/Attack/Player_Attack5_L.png"),
+                pygame.image.load("images/Sprite/Player_Sprite_L.png")]
  
 # Animations for the Health Bar
-health_ani = [pygame.image.load("images/heart0.png"), pygame.image.load("images/heart.png"),
-              pygame.image.load("images/heart2.png"), pygame.image.load("images/heart3.png"),
-              pygame.image.load("images/heart4.png"), pygame.image.load("images/heart5.png")]
+health_ani = [pygame.image.load("images/Health/heart0.png"), pygame.image.load("images/Health/heart.png"),
+              pygame.image.load("images/Health/heart2.png"), pygame.image.load("images/Health/heart3.png"),
+              pygame.image.load("images/Health/heart4.png"), pygame.image.load("images/Health/heart5.png")]
  
  
 class Background(pygame.sprite.Sprite):
       def __init__(self):
             super().__init__()
-            self.bgimage = pygame.image.load("images/Background.png")
+            self.bgimage = pygame.image.load("images/Backgrounds/Background.png")
             self.rectBGimg = self.bgimage.get_rect()        
             self.bgY = 0
             self.bgX = 0
@@ -72,7 +81,7 @@ class Background(pygame.sprite.Sprite):
 class Ground(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("images/Ground.png")
+        self.image = pygame.image.load("images/Grounds/Ground.png")
         self.rect = self.image.get_rect(center = (350, 350))
         self.bgX1 = 0
         self.bgY1 = 285
@@ -84,7 +93,7 @@ class Ground(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("images/Player_Sprite_R.png")
+        self.image = pygame.image.load("images/Sprite/Player_Sprite_R.png")
         self.rect = self.image.get_rect()
  
         # Position and direction
@@ -186,6 +195,7 @@ class Player(pygame.sprite.Sprite):
  
           # Check direction for correct animation to display  
           if self.direction == "RIGHT":
+                 self.correction()
                  self.image = attack_ani_R[self.attack_frame]
           elif self.direction == "LEFT":
                  self.correction()
@@ -232,14 +242,15 @@ class Player(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
       def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("images/Enemy.png")
+        self.image = pygame.image.load("images/Enemy/Backhoe.png")
         self.rect = self.image.get_rect()     
         self.pos = vec(0,0)
         self.vel = vec(0,0)
  
         self.direction = random.randint(0,1) # 0 for Right, 1 for Left
         self.vel.x = random.randint(2,6) / 2  # Randomised velocity of the generated enemy
- 
+        self.mana = random.randint(1, 3)  # Randomised mana amount obtained upon kill
+
         # Sets the intial position of the enemy
         if self.direction == 0:
             self.pos.x = 0
@@ -271,6 +282,8 @@ class Enemy(pygame.sprite.Sprite):
  
             # Activates upon either of the two expressions being true
             if hits and player.attacking == True:
+                  if player.mana < 100: player.mana += self.mana # Release mana
+                  player.experiance += 1   # Release expeiriance
                   print("Enemy Killed")
                   self.kill()
  
@@ -365,15 +378,52 @@ class EventHandler():
             self.enemy_count = 0
             pygame.time.set_timer(self.enemy_generation, 1500 - (50 * self.stage))      
  
- 
 class HealthBar(pygame.sprite.Sprite):
       def __init__(self):
             super().__init__()
-            self.image = pygame.image.load("images/heart5.png")
+            self.image = pygame.image.load("images/Health/heart5.png")
  
       def render(self):
             displaysurface.blit(self.image, (10,10))
- 
+
+class StageDisplay(pygame.sprite.Sprite):
+      def __init__(self):
+            super().__init__()
+            self.text = headingfont.render("STAGE: " + str(handler.stage) , True , color_dark)
+            self.rect = self.text.get_rect()
+            self.posx = -100
+            self.posy = 100
+            self.display = False
+
+      def move_display(self):
+            # Create the text to be displayed
+            self.text = headingfont.render("STAGE: " + str(handler.stage) , True , color_dark)
+            if self.posx < 700:
+                  self.posx += 5
+                  displaysurface.blit(self.text, (self.posx, self.posy))
+            else:
+                  self.display = False
+                  self.kill()
+
+class StatusBar(pygame.sprite.Sprite):
+      def __init__(self):
+            super().__init__()
+            self.surf = pygame.Surface((90, 66))
+            self.rect = self.surf.get_rect(center = (500, 10))
+
+      def update_draw(self):
+            # Create the text to be displayed
+            text1 = smallerfont.render("STAGE: " + str(handler.stage) , True , color_white)
+            text2 = smallerfont.render("CERTS: " + str(player.experiance) , True , color_white)
+            text3 = smallerfont.render("TAC Cases: " + str(player.mana) , True , color_white)
+            text4 = smallerfont.render("FPS: " + str(int(FPS_CLOCK.get_fps())) , True , color_white)
+       
+            # Draw the text to the status bar
+            displaysurface.blit(text1, (585, 7))
+            displaysurface.blit(text2, (585, 22))
+            displaysurface.blit(text3, (585, 37))
+            displaysurface.blit(text4, (585, 52))
+
 Enemies = pygame.sprite.Group()
  
 player = Player()
@@ -388,8 +438,10 @@ ground_group.add(ground)
  
 castle = Castle()
 handler = EventHandler()
+stage_display = StageDisplay() 
 health = HealthBar()
- 
+status_bar = StatusBar()
+
 hit_cooldown = pygame.USEREVENT + 1
  
 while True:
@@ -419,7 +471,9 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_n:
                   if handler.battle == True and len(Enemies) == 0:
-                        handler.next_stage() 
+                        handler.next_stage()
+                        stage_display = StageDisplay()
+                        stage_display.display = True
             if event.key == pygame.K_s and 450 < player.rect.x < 550:
                 handler.stage_handler()
             if event.key == pygame.K_SPACE:
@@ -445,12 +499,19 @@ while True:
     if player.health > 0:
         displaysurface.blit(player.image, player.rect)
     health.render()
- 
+
+    # Status bar update and render
+    displaysurface.blit(status_bar.surf, (580, 5))
+    status_bar.update_draw()
+
     for entity in Enemies:
           entity.update()
           entity.move()
           entity.render()
-           
- 
+
+    # Render stage display
+    if stage_display.display == True:
+          stage_display.move_display()           
+
     pygame.display.update()      
     FPS_CLOCK.tick(FPS)
