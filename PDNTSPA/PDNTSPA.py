@@ -280,10 +280,11 @@ class Enemy(pygame.sprite.Sprite):
             if cursor.wait == 1: return
             # Checks for collision with the Player
             hits = pygame.sprite.spritecollide(self, Playergroup, False)
-            #print("fff")
+            # Checks for collision with Fireballs
+            f_hits = pygame.sprite.spritecollide(self, Fireballs, False)
  
             # Activates upon either of the two expressions being true
-            if hits and player.attacking == True:
+            if hits and player.attacking == True or f_hits:
                   if player.mana < 100: player.mana += self.mana # Release mana
                   player.experiance += 1   # Release expeiriance
                   print("Enemy Killed")
@@ -557,6 +558,38 @@ class Cursor(pygame.sprite.Sprite):
           else:
                 pygame.mouse.set_visible(True)
 
+class FireBall(pygame.sprite.Sprite):
+      def __init__(self):
+            super().__init__()
+            self.direction  = player.direction
+            if self.direction == "RIGHT":
+                  self.image = pygame.image.load("images/Fireballs/fireball1_R.png")
+            else:
+                  self.image = pygame.image.load("images/Fireballs/fireball1_L.png")           
+            self.rect = self.image.get_rect(center = player.pos)
+            self.rect.x = player.pos.x
+            self.rect.y = player.pos.y - 40
+
+      def fire(self):
+            player.magic_cooldown = 0
+            # Runs while the fireball is still within the screen w/ extra margin
+            if -10 < self.rect.x < 710:
+                  if self.direction == "RIGHT":
+                        self.image = pygame.image.load("images/Fireballs/fireball1_R.png")
+                        displaysurface.blit(self.image, self.rect)
+                  else:
+                        self.image = pygame.image.load("images/Fireballs/fireball1_L.png")
+                        displaysurface.blit(self.image, self.rect)
+                         
+                  if self.direction == "RIGHT":
+                        self.rect.move_ip(12, 0)
+                  else:
+                        self.rect.move_ip(-12, 0)   
+            else:
+                  self.kill()
+                  player.magic_cooldown = 1
+                  player.attacking = False
+
 Enemies = pygame.sprite.Group()
  
 player = Player()
@@ -577,6 +610,8 @@ health = HealthBar()
 status_bar = StatusBar()
 
 Items = pygame.sprite.Group()
+
+Fireballs = pygame.sprite.Group()
 
 hit_cooldown = pygame.USEREVENT + 1
  
@@ -623,7 +658,12 @@ while True:
                 if player.attacking == False:
                     player.attack()
                     player.attacking = True     
- 
+            if event.key == pygame.K_m and player.magic_cooldown == 1:
+                 if player.mana >= 3:
+                       player.mana -= 3
+                       player.attacking = True
+                       fireball = FireBall()
+                       Fireballs.add(fireball)
  
     # Player related functions
     player.update()
@@ -647,6 +687,10 @@ while True:
     displaysurface.blit(status_bar.surf, (580, 5))
     status_bar.update_draw()
     handler.update()
+
+    # Fire Any Fireballs
+    for ball in Fireballs:
+          ball.fire()
 
     for entity in Enemies:
           entity.update()
