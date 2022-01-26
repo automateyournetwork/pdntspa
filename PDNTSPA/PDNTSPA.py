@@ -82,7 +82,7 @@ class Ground(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("images/Grounds/Ground.png")
-        self.rect = self.image.get_rect(center = (350, 350))
+        self.rect = self.image.get_rect(center = (350, 340))
         self.bgX1 = 0
         self.bgY1 = 285
  
@@ -376,9 +376,9 @@ class EventHandler():
        
       def world1(self):
             self.root.destroy()
-            background.bgimage = pygame.image.load("images/Backgrounds/Background02.png")
-            ground.image = pygame.image.load("images/Grounds/Ground02.png")
-            pygame.time.set_timer(self.enemy_generation, 1000)
+            background.bgimage = pygame.image.load("images/Backgrounds/Background.png")
+            ground.image = pygame.image.load("images/Grounds/Ground.png")
+            pygame.time.set_timer(self.enemy_generation, 500)
             button.imgdisp = 1
             castle.hide = True
             self.battle = True
@@ -388,31 +388,61 @@ class EventHandler():
             self.root.destroy()
             background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
             ground.image = pygame.image.load("images/Grounds/desert_ground.png")
-            pygame.time.set_timer(self.enemy_generation2, 2000)
+            pygame.time.set_timer(self.enemy_generation2, 750)
             button.imgdisp = 1
             castle.hide = True
             self.battle = True
             self.world = 2
              
       def world3(self):
-            self.battle = True
+            self.root.destroy()
+            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
+            ground.image = pygame.image.load("images/Grounds/desert_ground.png")
+            pygame.time.set_timer(self.enemy_generation3, 1000)
             button.imgdisp = 1
+            castle.hide = True
+            self.battle = True
+            self.world = 3
   
       def world4(self):
-            self.battle = True
+            self.root.destroy()
+            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
+            ground.image = pygame.image.load("images/Grounds/desert_ground.png")
+            pygame.time.set_timer(self.enemy_generation4, 1250)
             button.imgdisp = 1
+            castle.hide = True
+            self.battle = True
+            self.world = 4
 
       def world5(self):
-            self.battle = True
+            self.root.destroy()
+            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
+            ground.image = pygame.image.load("images/Grounds/desert_ground.png")
+            pygame.time.set_timer(self.enemy_generation5, 1500)
             button.imgdisp = 1
+            castle.hide = True
+            self.battle = True
+            self.world = 5
 
       def world6(self):
-            self.battle = True
+            self.root.destroy()
+            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
+            ground.image = pygame.image.load("images/Grounds/desert_ground.png")
+            pygame.time.set_timer(self.enemy_generation5, 1750)
             button.imgdisp = 1
+            castle.hide = True
+            self.battle = True
+            self.world = 6
 
       def world7(self):
+            self.root.destroy()
+            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
+            ground.image = pygame.image.load("images/Grounds/desert_ground.png")
+            pygame.time.set_timer(self.enemy_generation5, 2000)
+            button.imgdisp = 1
+            castle.hide = True
             self.battle = True
-            button.imgdisp = 1            
+            self.world = 7
 
       def next_stage(self):  # Code for when the next stage is clicked            
             button.imgdisp = 1
@@ -424,6 +454,16 @@ class EventHandler():
                   pygame.time.set_timer(self.enemy_generation, 1500 - (50 * self.stage))
             elif self.world == 2:
                   pygame.time.set_timer(self.enemy_generation2, 1500 - (50 * self.stage))
+            elif self.world == 3:
+                  pygame.time.set_timer(self.enemy_generation3, 1500 - (50 * self.stage))
+            elif self.world == 4:
+                  pygame.time.set_timer(self.enemy_generation4, 1500 - (50 * self.stage))
+            elif self.world == 5:
+                  pygame.time.set_timer(self.enemy_generation5, 1500 - (50 * self.stage))
+            elif self.world == 6:
+                  pygame.time.set_timer(self.enemy_generation6, 1500 - (50 * self.stage))
+            elif self.world == 7:
+                  pygame.time.set_timer(self.enemy_generation7, 1500 - (50 * self.stage))
 
       def update(self):
             if self.dead_enemy_count == self.stage_enemies[self.stage - 1]:
@@ -435,6 +475,11 @@ class EventHandler():
             # Reset Battle code
             pygame.time.set_timer(self.enemy_generation, 0)
             pygame.time.set_timer(self.enemy_generation2, 0)
+            pygame.time.set_timer(self.enemy_generation3, 0)
+            pygame.time.set_timer(self.enemy_generation4, 0)
+            pygame.time.set_timer(self.enemy_generation5, 0)
+            pygame.time.set_timer(self.enemy_generation6, 0)
+            pygame.time.set_timer(self.enemy_generation7, 0)
             self.battle = False
             self.enemy_count = 0
             self.dead_enemy_count = 0
@@ -654,7 +699,31 @@ while True:
                   enemy = Enemy()
                   Enemies.add(enemy)
                   handler.enemy_count += 1    
-             
+
+        if event.type == handler.enemy_generation2:
+            if handler.enemy_count < handler.stage_enemies[handler.stage - 1]:
+                  pass
+
+        if event.type == handler.enemy_generation3:
+            if handler.enemy_count < handler.stage_enemies[handler.stage - 1]:
+                  pass
+
+        if event.type == handler.enemy_generation4:
+            if handler.enemy_count < handler.stage_enemies[handler.stage - 1]:
+                  pass
+
+        if event.type == handler.enemy_generation5:
+            if handler.enemy_count < handler.stage_enemies[handler.stage - 1]:
+                  pass
+
+        if event.type == handler.enemy_generation6:
+            if handler.enemy_count < handler.stage_enemies[handler.stage - 1]:
+                  pass
+
+        if event.type == handler.enemy_generation7:
+            if handler.enemy_count < handler.stage_enemies[handler.stage - 1]:
+                  pass
+
         # For events that occur upon clicking the mouse (left click) 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if 620 <= mouse[0] <= 670 and 300 <= mouse[1] <= 345:
@@ -684,9 +753,6 @@ while True:
                        player.attacking = True
                        fireball = FireBall()
                        Fireballs.add(fireball)
-            if event.type == handler.enemy_generation2:
-                if handler.enemy_count < handler.stage_enemies[handler.stage - 1]:
-                      pass
 
     # Player related functions
     player.update()
