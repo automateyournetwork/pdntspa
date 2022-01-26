@@ -243,8 +243,6 @@ class Player(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
       def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("images/Enemy/Backhoe.png")
-        self.rect = self.image.get_rect()     
         self.pos = vec(0,0)
         self.vel = vec(0,0)
  
@@ -260,13 +258,19 @@ class Enemy(pygame.sprite.Sprite):
             self.pos.x = 700
             self.pos.y = 235
  
+        if self.direction == 0: self.image = pygame.image.load("images\Enemy\Backhoe.png")
+        if self.direction == 1: self.image = pygame.image.load("images\Enemy\Backhoe_L.png")
+        self.rect = self.image.get_rect()  
+
       def move(self):
         if cursor.wait == 1: return
         # Causes the enemy to change directions upon reaching the end of screen    
         if self.pos.x >= (WIDTH-20):
               self.direction = 1
+              self.image = pygame.image.load("images\Enemy\Backhoe_L.png")
         elif self.pos.x <= 0:
               self.direction = 0
+              self.image = pygame.image.load("images\Enemy\Backhoe.png")
  
         # Updates positon with new values     
         if self.direction == 0:
@@ -313,7 +317,126 @@ class Enemy(pygame.sprite.Sprite):
             # Displayed the enemy on screen
             displaysurface.blit(self.image, (self.pos.x, self.pos.y))
  
- 
+class Enemy2(pygame.sprite.Sprite):
+      def __init__(self):
+        super().__init__()   
+        self.pos = vec(0,0)
+        self.vel = vec(0,0)
+        self.wait = 0
+        self.wait_status = False
+        self.turning = 0 
+
+        self.direction = random.randint(0,1) # 0 for Right, 1 for Left
+        self.vel.x = random.randint(2,6) / 3  # Randomized velocity of the generated enemy
+        self.mana = random.randint(2, 3)  # Randomized mana amount obtained upon
+
+        if self.direction == 0: self.image = pygame.image.load("images\Enemy\stp.png")
+        if self.direction == 1: self.image = pygame.image.load("images\Enemy\stp_L.png")
+        self.rect = self.image.get_rect()  
+         
+        # Sets the initial position of the enemy
+        if self.direction == 0:
+            self.pos.x = 0
+            self.pos.y = 200
+        if self.direction == 1:
+            self.pos.x = 700
+            self.pos.y = 200
+
+      def move(self):
+        if cursor.wait == 1: return
+       
+        # Causes the enemy to change directions upon reaching the end of screen    
+        if self.pos.x >= (WIDTH-20):
+              self.direction = 1
+        elif self.pos.x <= 0:
+              self.direction = 0
+
+        # Updates position with new values
+        if self.wait > 50:
+              self.wait_status = True
+        elif int(self.wait) <= 0:
+              self.wait_status = False
+
+        if self.wait_status == True:
+              rand_num = numpy.random.uniform(0, 50)
+              if int(rand_num) == 25:
+                    bolt = Bolt(self.pos.x, self.pos.y, self.direction)
+                    Bolts.add(bolt)
+              self.wait -= 1
+
+        if (self.direction_check()):
+           self.turn()
+           self.wait = 90
+           self.turning = 1
+
+        if self.wait_status == True:
+              self.wait -= 1
+
+        elif self.direction == 0:
+            self.pos.x += self.vel.x
+            self.wait += self.vel.x
+        elif self.direction == 1:
+            self.pos.x -= self.vel.x
+            self.wait += self.vel.x
+         
+        self.rect.topleft = self.pos # Updates rect
+
+      def turn(self):
+            if self.wait > 0:
+                self.wait -= 1
+                return
+            elif int(self.wait) <= 0:
+                self.turning = 0
+                 
+            if (self.direction):
+                  self.direction = 0
+                  self.image = pygame.image.load("images\Enemy\stp.png")
+            else:
+                  self.direction = 1
+                  self.image = pygame.image.load("images\Enemy\stp_L.png")
+
+      def update(self):
+            # Checks for collision with the Player
+            hits = pygame.sprite.spritecollide(self, Playergroup, False)
+       
+            # Checks for collision with Fireballs
+            f_hits = pygame.sprite.spritecollide(self, Fireballs, False)
+       
+            # Activates upon either of the two expressions being true
+            if hits and player.attacking == True or f_hits:
+                  self.kill()
+                  handler.dead_enemy_count += 1
+                   
+                  if player.mana < 100: player.mana += self.mana # Release mana
+                  player.experiance += 1   # Release expeiriance
+                   
+                  rand_num = numpy.random.uniform(0, 100)
+                  item_no = 0
+                  if rand_num >= 0 and rand_num <= 5:  # 1 / 20 chance for an item (health) drop
+                        item_no = 1
+                  elif rand_num > 5 and rand_num <= 15:
+                        item_no = 2
+       
+                  if item_no != 0:
+                        # Add Item to Items group
+                        item = Item(item_no)
+                        Items.add(item)
+                        # Sets the item location to the location of the killed enemy
+                        item.posx = self.pos.x
+                        item.posy = self.pos.y 
+
+      def render(self):
+            # Displays the enemy on screen
+            displaysurface.blit(self.image, self.rect)
+
+      def direction_check(self):
+            if (player.pos.x - self.pos.x < 0 and self.direction == 0):
+                  return 1
+            elif (player.pos.x - self.pos.x > 0 and self.direction == 1):
+                  return 1
+            else:
+                  return 0
+
 class Castle(pygame.sprite.Sprite):
       def __init__(self):
             super().__init__()
@@ -322,7 +445,7 @@ class Castle(pygame.sprite.Sprite):
  
       def update(self):
             if self.hide == False:
-                  displaysurface.blit(self.image, (450, 80))
+                  displaysurface.blit(self.image, (450, 45))
  
  
 class EventHandler():
@@ -655,6 +778,38 @@ class FireBall(pygame.sprite.Sprite):
                   player.magic_cooldown = 1
                   player.attacking = False
 
+class Bolt(pygame.sprite.Sprite):
+      def __init__(self, x, y, d):
+            super().__init__()
+            self.image = pygame.image.load("images/Fireballs/crc.png")
+            self.rect = self.image.get_rect()
+            self.rect.x = x + 15
+            self.rect.y = y + 20
+            self.direction = d
+
+      def fire(self):
+            # Runs while the fireball is still within the screen w/ extra margin
+            if -10 < self.rect.x < 710:
+                  if self.direction == 0:
+                        self.image = pygame.image.load("images/Fireballs/crc.png")
+                        displaysurface.blit(self.image, self.rect)
+                  else:
+                        self.image = pygame.image.load("images/Fireballs/crc.png")
+                        displaysurface.blit(self.image, self.rect)
+                         
+                  if self.direction == 0:
+                        self.rect.move_ip(12, 0)
+                  else:
+                        self.rect.move_ip(-12, 0)   
+            else:
+                  self.kill()
+       
+            # Checks for collision with the Player
+            hits = pygame.sprite.spritecollide(self, Playergroup, False)
+            if hits:
+                  player.player_hit()
+                  self.kill()
+
 Enemies = pygame.sprite.Group()
  
 player = Player()
@@ -677,6 +832,8 @@ status_bar = StatusBar()
 Items = pygame.sprite.Group()
 
 Fireballs = pygame.sprite.Group()
+
+Bolts = pygame.sprite.Group()
 
 hit_cooldown = pygame.USEREVENT + 1
  
@@ -702,7 +859,9 @@ while True:
 
         if event.type == handler.enemy_generation2:
             if handler.enemy_count < handler.stage_enemies[handler.stage - 1]:
-                  pass
+                enemy = Enemy2()
+                Enemies.add(enemy)
+                handler.enemy_count += 1
 
         if event.type == handler.enemy_generation3:
             if handler.enemy_count < handler.stage_enemies[handler.stage - 1]:
@@ -780,6 +939,9 @@ while True:
     # Fire Any Fireballs
     for ball in Fireballs:
           ball.fire()
+
+    for bolt in Bolts:
+          bolt.fire()
 
     for entity in Enemies:
           entity.update()
