@@ -9,7 +9,7 @@ import numpy
 from MusicManager import MusicManager
 
 pygame.init()  # Begin pygame
- 
+
 # Declaring variables to be used through the program
 vec = pygame.math.Vector2
 HEIGHT = 350
@@ -29,7 +29,12 @@ soundtrack = ["sounds/background_village.wav", "sounds/physical.mid", "sounds/ba
 swordtrack = [pygame.mixer.Sound("sounds/sword1.wav"), pygame.mixer.Sound("sounds/sword2.wav")]
 fsound = pygame.mixer.Sound("sounds/fireball_sound.wav")
 hit = pygame.mixer.Sound("sounds/enemy_hit.wav")
- 
+
+# icon
+programIcon = pygame.image.load('images/icon.png')
+
+pygame.display.set_icon(programIcon)
+
 mmanager = MusicManager()
 mmanager.playsoundtrack(soundtrack[0], -1, 0.05)
 
