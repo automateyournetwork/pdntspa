@@ -6,9 +6,10 @@ import time
 from tkinter import filedialog
 from tkinter import *
 import numpy
+from MusicManager import MusicManager
 
 pygame.init()  # Begin pygame
- 
+
 # Declaring variables to be used through the program
 vec = pygame.math.Vector2
 HEIGHT = 350
@@ -18,7 +19,25 @@ FRIC = -0.10
 FPS = 60
 FPS_CLOCK = pygame.time.Clock()
 COUNT = 0
- 
+
+# sound freq, size, channel, buffsize
+pygame.mixer.pre_init(44100, 16, 1, 512)
+pygame.init() 
+
+# Music and Sound
+soundtrack = ["sounds/background_village.wav", "sounds/physical.mid", "sounds/battle_music.wav", "sounds/gameover.wav"]
+swordtrack = [pygame.mixer.Sound("sounds/sword1.wav"), pygame.mixer.Sound("sounds/sword2.wav")]
+fsound = pygame.mixer.Sound("sounds/fireball_sound.wav")
+hit = pygame.mixer.Sound("sounds/enemy_hit.wav")
+
+# icon
+programIcon = pygame.image.load('images/icon.png')
+
+pygame.display.set_icon(programIcon)
+
+mmanager = MusicManager()
+mmanager.playsoundtrack(soundtrack[0], -1, 0.05)
+
 # Create the display
 displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Please Do Not Throw Sausage Pizza Away")
@@ -119,7 +138,9 @@ class Player(pygame.sprite.Sprite):
         self.magic_cooldown = 1
         self.mana = 0
  
- 
+        # Sound
+        self.slash = 0
+
     def move(self):
           # Keep a constant acceleration of 0.5 in the downwards direction (gravity)
           self.acc = vec(0,0.5)
@@ -188,7 +209,7 @@ class Player(pygame.sprite.Sprite):
                       self.image = run_ani_L[self.move_frame]
  
     def attack(self):
-          if cursor.wait == 1: return        
+          if cursor.wait == 1: return
           # If attack frame has reached end of sequence, return to base frame      
           if self.attack_frame > 10:
                 self.attack_frame = 0
@@ -202,22 +223,28 @@ class Player(pygame.sprite.Sprite):
                  self.correction()
                  self.image = attack_ani_L[self.attack_frame] 
  
+          if self.attack_frame == 0:
+                mmanager.playsound(swordtrack[self.slash], 0.05)
+             
+                self.slash += 1
+                if self.slash >= 2:
+                      self.slash = 0
+
           # Update the current attack frame  
           self.attack_frame += 1
            
- 
     def jump(self):
-        self.rect.x += 1
+          self.rect.x += 1
  
-        # Check to see if payer is in contact with the ground
-        hits = pygame.sprite.spritecollide(self, ground_group, False)
+          # Check to see if payer is in contact with the ground
+          hits = pygame.sprite.spritecollide(self, ground_group, False)
          
-        self.rect.x -= 1
+          self.rect.x -= 1
  
-        # If touching the ground, and not currently jumping, cause the player to jump.
-        if hits and not self.jumping:
-           self.jumping = True
-           self.vel.y = -12
+          # If touching the ground, and not currently jumping, cause the player to jump.
+          if hits and not self.jumping:
+             self.jumping = True
+             self.vel.y = -12
  
     def correction(self):
           # Function is used to correct an error
@@ -237,6 +264,8 @@ class Player(pygame.sprite.Sprite):
              
             if self.health <= 0:
                 self.kill()
+                mmanager.stop()
+                mmanager.playsoundtrack(soundtrack[2], -1, 0.1)
                 pygame.display.update()
  
        
@@ -293,6 +322,7 @@ class Enemy(pygame.sprite.Sprite):
                   player.experiance += 1   # Release expeiriance
                   print("Enemy Killed")
                   self.kill()
+                  mmanager.playsound(hit, 0.05)
                   handler.dead_enemy_count += 1
                   # Item drop number 
                   rand_num = numpy.random.uniform(0, 100)
@@ -506,6 +536,7 @@ class EventHandler():
             castle.hide = True
             self.battle = True
             self.world = 1
+            mmanager.playsoundtrack(soundtrack[1], -1, 0.05)
  
       def world2(self):
             self.root.destroy()
@@ -516,6 +547,7 @@ class EventHandler():
             castle.hide = True
             self.battle = True
             self.world = 2
+            mmanager.playsoundtrack(soundtrack[2], -1, 0.05)
              
       def world3(self):
             self.root.destroy()
@@ -526,6 +558,7 @@ class EventHandler():
             castle.hide = True
             self.battle = True
             self.world = 3
+            mmanager.playsoundtrack(soundtrack[2], -1, 0.05)
   
       def world4(self):
             self.root.destroy()
@@ -536,6 +569,7 @@ class EventHandler():
             castle.hide = True
             self.battle = True
             self.world = 4
+            mmanager.playsoundtrack(soundtrack[2], -1, 0.05)
 
       def world5(self):
             self.root.destroy()
@@ -546,6 +580,7 @@ class EventHandler():
             castle.hide = True
             self.battle = True
             self.world = 5
+            mmanager.playsoundtrack(soundtrack[2], -1, 0.05)
 
       def world6(self):
             self.root.destroy()
@@ -556,6 +591,7 @@ class EventHandler():
             castle.hide = True
             self.battle = True
             self.world = 6
+            mmanager.playsoundtrack(soundtrack[2], -1, 0.05)
 
       def world7(self):
             self.root.destroy()
@@ -566,6 +602,7 @@ class EventHandler():
             castle.hide = True
             self.battle = True
             self.world = 7
+            mmanager.playsoundtrack(soundtrack[2], -1, 0.05)
 
       def next_stage(self):  # Code for when the next stage is clicked            
             button.imgdisp = 1
@@ -912,6 +949,7 @@ while True:
                        player.attacking = True
                        fireball = FireBall()
                        Fireballs.add(fireball)
+                       mmanager.playsound(fsound, 0.3)
 
     # Player related functions
     player.update()
