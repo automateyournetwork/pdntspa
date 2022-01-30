@@ -14,7 +14,7 @@ pygame.init()  # Begin pygame
 #flags = FULLSCREEN | DOUBLEBUF
 
 # Music and Sound
-soundtrack = ["sounds/hold.wav", "sounds/physical.mid", "sounds/battle_music.wav", "sounds/hold.wav"]
+soundtrack = ["sounds/hold.wav", "sounds/physical.mid", "sounds/freeze_frame.mid"]
 swordtrack = [pygame.mixer.Sound("sounds/sword1.wav"), pygame.mixer.Sound("sounds/sword2.wav")]
 fsound = pygame.mixer.Sound("sounds/fireball_sound.wav")
 hit = pygame.mixer.Sound("sounds/enemy_hit.wav")
@@ -264,7 +264,6 @@ class Player(pygame.sprite.Sprite):
             if self.health <= 0:
                 self.kill()
                 mmanager.stop()
-                mmanager.playsoundtrack(soundtrack[2], -1, 0.1)
                 pygame.display.update()
  
        
