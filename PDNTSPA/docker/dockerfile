@@ -1,21 +1,23 @@
 FROM ubuntu:latest
 
-ARG DEBIAN_FRONTEND=noninteractive
-
 RUN echo "==> Upgrading apk and installing system utilities ...." \
  && apt -y update \
- && sudo apt install -y git-all
+ && apt-get -y install sudo 
+
+RUN echo "==> Install Git ...." \ 
+ && sudo DEBIAN_FRONTEND=noninteractive apt install -y git-all
 
 RUN echo "==> Installing Python3 and pip ...." \  
  && apt-get install python3 -y \
  && apt install python3-pip -y
 
-RUN pip install pygame
-RUN pip install numpy
+RUN echo "==> Installing pyGame ...." \  
+  && pip install pygame
 
-RUN echo "==> Adding Blender Part Two Git Clone..." \
-  && mkdir ~/blender-git \
-  && cd ~/blender-git \
-  && git clone https://github/automateyournetwork/pdntspa.git
+RUN echo "==> Installing numply ...." \  
+  && pip install numpy
+
+RUN echo "==> Git Clone..." \
+  && git clone https://github.com/automateyournetwork/pdntspa.git
 
 CMD ["/pdntspa/PDNTSPA/python PDNTSPA.py"]
