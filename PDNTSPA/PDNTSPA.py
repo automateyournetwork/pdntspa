@@ -1,3 +1,4 @@
+import os
 import pygame
 from pygame.locals import *
 import sys
@@ -7,6 +8,7 @@ from tkinter import filedialog
 from tkinter import *
 import numpy
 from MusicManager import MusicManager
+os.environ['SDL_AUDIODRIVER'] = 'dsp'
 
 # sound freq, size, channel, buffsize
 pygame.mixer.pre_init(44100, 16, 1, 512)
