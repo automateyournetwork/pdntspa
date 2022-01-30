@@ -8,7 +8,18 @@ from tkinter import *
 import numpy
 from MusicManager import MusicManager
 
+# sound freq, size, channel, buffsize
+pygame.mixer.pre_init(44100, 16, 1, 512)
 pygame.init()  # Begin pygame
+#flags = FULLSCREEN | DOUBLEBUF
+
+# Music and Sound
+soundtrack = ["sounds/hold.wav", "sounds/physical.mid", "sounds/battle_music.wav", "sounds/hold.wav"]
+swordtrack = [pygame.mixer.Sound("sounds/sword1.wav"), pygame.mixer.Sound("sounds/sword2.wav")]
+fsound = pygame.mixer.Sound("sounds/fireball_sound.wav")
+hit = pygame.mixer.Sound("sounds/enemy_hit.wav")
+mmanager = MusicManager()
+mmanager.playsoundtrack(soundtrack[0], -1, 1.0)
 
 # Declaring variables to be used through the program
 vec = pygame.math.Vector2
@@ -20,60 +31,48 @@ FPS = 60
 FPS_CLOCK = pygame.time.Clock()
 COUNT = 0
 
-# sound freq, size, channel, buffsize
-pygame.mixer.pre_init(44100, 16, 1, 512)
-pygame.init() 
-
-# Music and Sound
-soundtrack = ["sounds/background_village.wav", "sounds/physical.mid", "sounds/battle_music.wav", "sounds/gameover.wav"]
-swordtrack = [pygame.mixer.Sound("sounds/sword1.wav"), pygame.mixer.Sound("sounds/sword2.wav")]
-fsound = pygame.mixer.Sound("sounds/fireball_sound.wav")
-hit = pygame.mixer.Sound("sounds/enemy_hit.wav")
-
 # icon
 programIcon = pygame.image.load('images/icon.png')
-
 pygame.display.set_icon(programIcon)
 
-mmanager = MusicManager()
-mmanager.playsoundtrack(soundtrack[0], -1, 0.05)
-
 # Create the display
+#displaysurface = pygame.display.set_mode((WIDTH, HEIGHT), flags, 32)
 displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Please Do Not Throw Sausage Pizza Away")
-
-# defining font styles
-headingfont = pygame.font.SysFont("Verdana", 40)
-regularfont = pygame.font.SysFont('Corbel',25)
-smallerfont = pygame.font.SysFont('Corbel',16)
 
 # Colours
 color_light = (170,170,170)
 color_dark = (100,100,100)
 color_white = (255,255,255) 
 
+# defining font styles
+headingfont = pygame.font.SysFont("Verdana", 40)
+regularfont = pygame.font.SysFont('Corbel',25)
+smallerfont = pygame.font.SysFont('Corbel',16)
+text = regularfont.render('LOAD' , True , color_light)
+
 # Run animation for the RIGHT
-run_ani_R = [pygame.image.load("images/Sprite/Player_Sprite_R.png"), pygame.image.load("images/Sprite/Player_Sprite_R2.png"),
-             pygame.image.load("images/Sprite/Player_Sprite_R3.png"),pygame.image.load("images/Sprite/Player_Sprite_R4.png"),
-             pygame.image.load("images/Sprite/Player_Sprite_R5.png"),pygame.image.load("images/Sprite/Player_Sprite_R6.png"),
-             pygame.image.load("images/Sprite/Player_Sprite_R.png")]
+run_ani_R = [pygame.image.load("images/Sprite/Player_Sprite_R.png").convert_alpha(), pygame.image.load("images/Sprite/Player_Sprite_R2.png").convert_alpha(),
+             pygame.image.load("images/Sprite/Player_Sprite_R3.png").convert_alpha(), pygame.image.load("images/Sprite/Player_Sprite_R4.png").convert_alpha(),
+             pygame.image.load("images/Sprite/Player_Sprite_R5.png").convert_alpha(), pygame.image.load("images/Sprite/Player_Sprite_R6.png").convert_alpha(),
+             pygame.image.load("images/Sprite/Player_Sprite_R.png").convert_alpha()]
  
 # Run animation for the LEFT
-run_ani_L = [pygame.image.load("images/Sprite/Player_Sprite_L.png"), pygame.image.load("images/Sprite/Player_Sprite_L2.png"),
-             pygame.image.load("images/Sprite/Player_Sprite_L3.png"),pygame.image.load("images/Sprite/Player_Sprite_L4.png"),
-             pygame.image.load("images/Sprite/Player_Sprite_L5.png"),pygame.image.load("images/Sprite/Player_Sprite_L6.png"),
-             pygame.image.load("images/Sprite/Player_Sprite_L.png")]
+run_ani_L = [pygame.image.load("images/Sprite/Player_Sprite_L.png").convert_alpha(), pygame.image.load("images/Sprite/Player_Sprite_L2.png").convert_alpha(),
+             pygame.image.load("images/Sprite/Player_Sprite_L3.png").convert_alpha(), pygame.image.load("images/Sprite/Player_Sprite_L4.png").convert_alpha(),
+             pygame.image.load("images/Sprite/Player_Sprite_L5.png").convert_alpha(), pygame.image.load("images/Sprite/Player_Sprite_L6.png").convert_alpha(),
+             pygame.image.load("images/Sprite/Player_Sprite_L.png").convert_alpha()]
  
 # Attack animation for the RIGHT
-attack_ani_R = [pygame.image.load("images/Attack/Player_Attack_R.png"), pygame.image.load("images/Attack/Player_Attack_R.png"),
-                pygame.image.load("images/Attack/Player_Attack2_R.png"),pygame.image.load("images/Attack/Player_Attack2_R.png"),
-                pygame.image.load("images/Attack/Player_Attack3_R.png"),pygame.image.load("images/Attack/Player_Attack3_R.png"),
-                pygame.image.load("images/Attack/Player_Attack4_R.png"),pygame.image.load("images/Attack/Player_Attack4_R.png"),
-                pygame.image.load("images/Attack/Player_Attack5_R.png"),pygame.image.load("images/Attack/Player_Attack5_R.png"),
-                pygame.image.load("images/Sprite/Player_Sprite_R.png")]
+attack_ani_R = [pygame.image.load("images/Sprite/Player_Sprite_R.png").convert_alpha(), pygame.image.load("images/Attack/Player_Attack_R.png").convert_alpha(),
+                pygame.image.load("images/Attack/Player_Attack2_R.png").convert_alpha(), pygame.image.load("images/Attack/Player_Attack2_R.png").convert_alpha(),
+                pygame.image.load("images/Attack/Player_Attack3_R.png").convert_alpha(), pygame.image.load("images/Attack/Player_Attack3_R.png").convert_alpha(),
+                pygame.image.load("images/Attack/Player_Attack4_R.png").convert_alpha(), pygame.image.load("images/Attack/Player_Attack4_R.png").convert_alpha(),
+                pygame.image.load("images/Attack/Player_Attack5_R.png").convert_alpha(), pygame.image.load("images/Attack/Player_Attack5_R.png").convert_alpha(),
+                pygame.image.load("images/Sprite/Player_Sprite_R.png").convert_alpha()]
  
 # Attack animation for the LEFT
-attack_ani_L = [pygame.image.load("images/Attack/Player_Attack_L.png"), pygame.image.load("images/Attack/Player_Attack_L.png"),
+attack_ani_L = [pygame.image.load("images/Sprite/Player_Sprite_L.png"), pygame.image.load("images/Attack/Player_Attack_L.png"),
                 pygame.image.load("images/Attack/Player_Attack2_L.png"),pygame.image.load("images/Attack/Player_Attack2_L.png"),
                 pygame.image.load("images/Attack/Player_Attack3_L.png"),pygame.image.load("images/Attack/Player_Attack3_L.png"),
                 pygame.image.load("images/Attack/Player_Attack4_L.png"),pygame.image.load("images/Attack/Player_Attack4_L.png"),
@@ -81,15 +80,14 @@ attack_ani_L = [pygame.image.load("images/Attack/Player_Attack_L.png"), pygame.i
                 pygame.image.load("images/Sprite/Player_Sprite_L.png")]
  
 # Animations for the Health Bar
-health_ani = [pygame.image.load("images/Health/heart0.png"), pygame.image.load("images/Health/heart.png"),
-              pygame.image.load("images/Health/heart2.png"), pygame.image.load("images/Health/heart3.png"),
-              pygame.image.load("images/Health/heart4.png"), pygame.image.load("images/Health/heart5.png")]
- 
+health_ani = [pygame.image.load("images/Health/heart0.png").convert_alpha(), pygame.image.load("images/Health/heart.png").convert_alpha(),
+              pygame.image.load("images/Health/heart2.png").convert_alpha(), pygame.image.load("images/Health/heart3.png").convert_alpha(),
+              pygame.image.load("images/Health/heart4.png").convert_alpha(), pygame.image.load("images/Health/heart5.png").convert_alpha()]
  
 class Background(pygame.sprite.Sprite):
       def __init__(self):
             super().__init__()
-            self.bgimage = pygame.image.load("images/Backgrounds/Background.png")
+            self.bgimage = pygame.image.load("images/Backgrounds/Homepage.png").convert_alpha()
             self.rectBGimg = self.bgimage.get_rect()        
             self.bgY = 0
             self.bgX = 0
@@ -100,24 +98,25 @@ class Background(pygame.sprite.Sprite):
 class Ground(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("images/Grounds/Ground.png")
+        self.image = pygame.image.load("images/Grounds/Homepage.png").convert_alpha()
         self.rect = self.image.get_rect(center = (350, 340))
-        self.bgX1 = 0
-        self.bgY1 = 285
+#        self.bgX1 = 0
+#        self.bgY1 = 285
  
     def render(self):
-        displaysurface.blit(self.image, (self.bgX1, self.bgY1)) 
+#        displaysurface.blit(self.image, (self.bgX1, self.bgY1)) 
+        displaysurface.blit(self.image, self.rect) 
  
  
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("images/Sprite/Player_Sprite_R.png")
+        self.image = pygame.image.load("images/Sprite/Player_Sprite_R.png").convert_alpha()
         self.rect = self.image.get_rect()
  
         # Position and direction
         self.vx = 0
-        self.pos = vec((340, 240))
+        self.pos = vec((340, 180))
         self.vel = vec(0,0)
         self.acc = vec(0,0)
         self.direction = "RIGHT"
@@ -171,15 +170,16 @@ class Player(pygame.sprite.Sprite):
           if self.pos.x < 0:
                 self.pos.x = WIDTH
          
-          self.rect.midbottom = self.pos  # Update rect with new pos            
+          self.rect.topleft = self.pos  # Update rect with new pos            
  
     def gravity_check(self):
           hits = pygame.sprite.spritecollide(player ,ground_group, False)
           if self.vel.y > 0:
               if hits:
                   lowest = hits[0]
-                  if self.pos.y < lowest.rect.bottom:
-                      self.pos.y = lowest.rect.top + 1
+                  if self.rect.bottom >= lowest.rect.top:
+                      self.rect.y = lowest.rect.top - self.rect.height + 1
+                      self.pos.y = lowest.rect.top- self.rect.height + 1
                       self.vel.y = 0
                       self.jumping = False
  
@@ -214,22 +214,21 @@ class Player(pygame.sprite.Sprite):
           if self.attack_frame > 10:
                 self.attack_frame = 0
                 self.attacking = False
- 
-          # Check direction for correct animation to display  
-          if self.direction == "RIGHT":
-                 self.correction()
-                 self.image = attack_ani_R[self.attack_frame]
-          elif self.direction == "LEFT":
-                 self.correction()
-                 self.image = attack_ani_L[self.attack_frame] 
- 
+
           if self.attack_frame == 0:
-                mmanager.playsound(swordtrack[self.slash], 0.05)
+                mmanager.playsound(swordtrack[self.slash], 2.5)
              
                 self.slash += 1
                 if self.slash >= 2:
                       self.slash = 0
 
+          # Check direction for correct animation to display  
+          if self.direction == "RIGHT":
+                 self.image = attack_ani_R[self.attack_frame]
+          elif self.direction == "LEFT":
+                 self.correction()
+                 self.image = attack_ani_L[self.attack_frame] 
+ 
           # Update the current attack frame  
           self.attack_frame += 1
            
@@ -282,13 +281,13 @@ class Enemy(pygame.sprite.Sprite):
         # Sets the intial position of the enemy
         if self.direction == 0:
             self.pos.x = 0
-            self.pos.y = 235
+            self.pos.y = 250
         if self.direction == 1:
             self.pos.x = 700
-            self.pos.y = 235
+            self.pos.y = 250
  
-        if self.direction == 0: self.image = pygame.image.load("images\Enemy\Backhoe.png")
-        if self.direction == 1: self.image = pygame.image.load("images\Enemy\Backhoe_L.png")
+        if self.direction == 0: self.image = pygame.image.load("images\Enemy\Backhoe.png").convert_alpha()
+        if self.direction == 1: self.image = pygame.image.load("images\Enemy\Backhoe_L.png").convert_alpha()
         self.rect = self.image.get_rect()  
 
       def move(self):
@@ -296,10 +295,10 @@ class Enemy(pygame.sprite.Sprite):
         # Causes the enemy to change directions upon reaching the end of screen    
         if self.pos.x >= (WIDTH-20):
               self.direction = 1
-              self.image = pygame.image.load("images\Enemy\Backhoe_L.png")
+              self.image = pygame.image.load("images\Enemy\Backhoe_L.png").convert_alpha()
         elif self.pos.x <= 0:
               self.direction = 0
-              self.image = pygame.image.load("images\Enemy\Backhoe.png")
+              self.image = pygame.image.load("images\Enemy\Backhoe.png").convert_alpha()
  
         # Updates positon with new values     
         if self.direction == 0:
@@ -307,10 +306,9 @@ class Enemy(pygame.sprite.Sprite):
         if self.direction == 1:
             self.pos.x -= self.vel.x
              
-        self.rect.center = self.pos # Updates rect
+        self.rect.topleft = self.pos # Updates rect
                 
       def update(self):
-            if cursor.wait == 1: return
             # Checks for collision with the Player
             hits = pygame.sprite.spritecollide(self, Playergroup, False)
             # Checks for collision with Fireballs
@@ -318,19 +316,20 @@ class Enemy(pygame.sprite.Sprite):
  
             # Activates upon either of the two expressions being true
             if hits and player.attacking == True or f_hits:
-                  if player.mana < 100: player.mana += self.mana # Release mana
-                  player.experiance += 1   # Release expeiriance
-                  print("Enemy Killed")
                   self.kill()
                   mmanager.playsound(hit, 0.05)
                   handler.dead_enemy_count += 1
-                  # Item drop number 
+                   
+                  if player.mana < 100: player.mana += self.mana # Release mana
+                  player.experiance += 1   # Release expeiriance
+                   
                   rand_num = numpy.random.uniform(0, 100)
                   item_no = 0
                   if rand_num >= 0 and rand_num <= 50:  # 1 / 20 chance for an item (health) drop
                         item_no = 1
                   elif rand_num > 51 and rand_num <= 100:
-                        item_no = 2                   
+                        item_no = 2
+ 
                   if item_no != 0:
                         # Add Item to Items group
                         item = Item(item_no)
@@ -345,7 +344,7 @@ class Enemy(pygame.sprite.Sprite):
 
       def render(self):
             # Displayed the enemy on screen
-            displaysurface.blit(self.image, (self.pos.x, self.pos.y))
+            displaysurface.blit(self.image, self.rect)
  
 class Enemy2(pygame.sprite.Sprite):
       def __init__(self):
@@ -360,8 +359,8 @@ class Enemy2(pygame.sprite.Sprite):
         self.vel.x = random.randint(2,6) / 3  # Randomized velocity of the generated enemy
         self.mana = random.randint(2, 3)  # Randomized mana amount obtained upon
 
-        if self.direction == 0: self.image = pygame.image.load("images\Enemy\stp.png")
-        if self.direction == 1: self.image = pygame.image.load("images\Enemy\stp_L.png")
+        if self.direction == 0: self.image = pygame.image.load("images\Enemy\stp.png").convert_alpha()
+        if self.direction == 1: self.image = pygame.image.load("images\Enemy\stp_L.png").convert_alpha()
         self.rect = self.image.get_rect()  
          
         # Sets the initial position of the enemy
@@ -372,9 +371,26 @@ class Enemy2(pygame.sprite.Sprite):
             self.pos.x = 700
             self.pos.y = 200
 
+      def turn(self):
+            if self.wait > 0:
+                self.wait -= 1
+                return
+            elif int(self.wait) <= 0:
+                self.turning = 0
+                 
+            if (self.direction):
+                  self.direction = 0
+                  self.image = pygame.image.load("images\Enemy\stp.png").convert_alpha()
+            else:
+                  self.direction = 1
+                  self.image = pygame.image.load("images\Enemy\stp_L.png").convert_alpha()
+
       def move(self):
         if cursor.wait == 1: return
-       
+        if self.turning == 1:
+              self.turn()
+              return
+
         # Causes the enemy to change directions upon reaching the end of screen    
         if self.pos.x >= (WIDTH-20):
               self.direction = 1
@@ -382,17 +398,10 @@ class Enemy2(pygame.sprite.Sprite):
               self.direction = 0
 
         # Updates position with new values
-        if self.wait > 50:
+        if self.wait > 60:
               self.wait_status = True
         elif int(self.wait) <= 0:
               self.wait_status = False
-
-        if self.wait_status == True:
-              rand_num = numpy.random.uniform(0, 50)
-              if int(rand_num) == 25:
-                    bolt = Bolt(self.pos.x, self.pos.y, self.direction)
-                    Bolts.add(bolt)
-              self.wait -= 1
 
         if (self.direction_check()):
            self.turn()
@@ -400,6 +409,10 @@ class Enemy2(pygame.sprite.Sprite):
            self.turning = 1
 
         if self.wait_status == True:
+              rand_num = numpy.random.uniform(0, 60)
+              if int(rand_num) == 30:
+                    bolt = Bolt(self.pos.x, self.pos.y, self.direction)
+                    Bolts.add(bolt)
               self.wait -= 1
 
         elif self.direction == 0:
@@ -411,19 +424,13 @@ class Enemy2(pygame.sprite.Sprite):
          
         self.rect.topleft = self.pos # Updates rect
 
-      def turn(self):
-            if self.wait > 0:
-                self.wait -= 1
-                return
-            elif int(self.wait) <= 0:
-                self.turning = 0
-                 
-            if (self.direction):
-                  self.direction = 0
-                  self.image = pygame.image.load("images\Enemy\stp.png")
+      def direction_check(self):
+            if (player.pos.x - self.pos.x < 0 and self.direction == 0):
+                  return 1
+            elif (player.pos.x - self.pos.x > 0 and self.direction == 1):
+                  return 1
             else:
-                  self.direction = 1
-                  self.image = pygame.image.load("images\Enemy\stp_L.png")
+                  return 0
 
       def update(self):
             # Checks for collision with the Player
@@ -435,6 +442,7 @@ class Enemy2(pygame.sprite.Sprite):
             # Activates upon either of the two expressions being true
             if hits and player.attacking == True or f_hits:
                   self.kill()
+                  mmanager.playsound(hit, 0.05)
                   handler.dead_enemy_count += 1
                    
                   if player.mana < 100: player.mana += self.mana # Release mana
@@ -442,9 +450,9 @@ class Enemy2(pygame.sprite.Sprite):
                    
                   rand_num = numpy.random.uniform(0, 100)
                   item_no = 0
-                  if rand_num >= 0 and rand_num <= 5:  # 1 / 20 chance for an item (health) drop
+                  if rand_num >= 0 and rand_num <= 50:  # 1 / 20 chance for an item (health) drop
                         item_no = 1
-                  elif rand_num > 5 and rand_num <= 15:
+                  elif rand_num > 51 and rand_num <= 100:
                         item_no = 2
        
                   if item_no != 0:
@@ -459,19 +467,11 @@ class Enemy2(pygame.sprite.Sprite):
             # Displays the enemy on screen
             displaysurface.blit(self.image, self.rect)
 
-      def direction_check(self):
-            if (player.pos.x - self.pos.x < 0 and self.direction == 0):
-                  return 1
-            elif (player.pos.x - self.pos.x > 0 and self.direction == 1):
-                  return 1
-            else:
-                  return 0
-
 class Castle(pygame.sprite.Sprite):
       def __init__(self):
             super().__init__()
             self.hide = False
-            self.image = pygame.image.load("images/osi.png")
+            self.image = pygame.image.load("images/osi.png").convert_alpha()
  
       def update(self):
             if self.hide == False:
@@ -491,6 +491,7 @@ class EventHandler():
             self.enemy_generation6 = pygame.USEREVENT + 6
             self.enemy_generation7 = pygame.USEREVENT + 7
             self.stage = 1
+            self.money = 0
             self.world = 0
  
             self.stage_enemies = []
@@ -529,8 +530,8 @@ class EventHandler():
        
       def world1(self):
             self.root.destroy()
-            background.bgimage = pygame.image.load("images/Backgrounds/Background.png")
-            ground.image = pygame.image.load("images/Grounds/Ground.png")
+            background.bgimage = pygame.image.load("images/Backgrounds/L1.png").convert_alpha()
+            ground.image = pygame.image.load("images/Grounds/L1.png").convert_alpha()
             pygame.time.set_timer(self.enemy_generation, 500)
             button.imgdisp = 1
             castle.hide = True
@@ -540,8 +541,8 @@ class EventHandler():
  
       def world2(self):
             self.root.destroy()
-            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
-            ground.image = pygame.image.load("images/Grounds/desert_ground.png")
+            background.bgimage = pygame.image.load("images/Backgrounds/L2.png").convert_alpha()
+            ground.image = pygame.image.load("images/Grounds/L2.png").convert_alpha()
             pygame.time.set_timer(self.enemy_generation2, 750)
             button.imgdisp = 1
             castle.hide = True
@@ -551,8 +552,8 @@ class EventHandler():
              
       def world3(self):
             self.root.destroy()
-            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
-            ground.image = pygame.image.load("images/Grounds/desert_ground.png")
+            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg").convert_alpha()
+            ground.image = pygame.image.load("images/Grounds/desert_L1.png").convert_alpha()
             pygame.time.set_timer(self.enemy_generation3, 1000)
             button.imgdisp = 1
             castle.hide = True
@@ -562,8 +563,8 @@ class EventHandler():
   
       def world4(self):
             self.root.destroy()
-            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
-            ground.image = pygame.image.load("images/Grounds/desert_ground.png")
+            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg").convert_alpha()
+            ground.image = pygame.image.load("images/Grounds/desert_L1.png").convert_alpha()
             pygame.time.set_timer(self.enemy_generation4, 1250)
             button.imgdisp = 1
             castle.hide = True
@@ -573,8 +574,8 @@ class EventHandler():
 
       def world5(self):
             self.root.destroy()
-            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
-            ground.image = pygame.image.load("images/Grounds/desert_ground.png")
+            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg").convert_alpha()
+            ground.image = pygame.image.load("images/Grounds/desert_L1.png").convert_alpha()
             pygame.time.set_timer(self.enemy_generation5, 1500)
             button.imgdisp = 1
             castle.hide = True
@@ -584,8 +585,8 @@ class EventHandler():
 
       def world6(self):
             self.root.destroy()
-            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
-            ground.image = pygame.image.load("images/Grounds/desert_ground.png")
+            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg").convert_alpha()
+            ground.image = pygame.image.load("images/Grounds/desert_L1.png").convert_alpha()
             pygame.time.set_timer(self.enemy_generation5, 1750)
             button.imgdisp = 1
             castle.hide = True
@@ -595,8 +596,8 @@ class EventHandler():
 
       def world7(self):
             self.root.destroy()
-            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg")
-            ground.image = pygame.image.load("images/Grounds/desert_ground.png")
+            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg").convert_alpha()
+            ground.image = pygame.image.load("images/Grounds/desert_L1.png").convert_alpha()
             pygame.time.set_timer(self.enemy_generation5, 2000)
             button.imgdisp = 1
             castle.hide = True
@@ -605,9 +606,7 @@ class EventHandler():
             mmanager.playsoundtrack(soundtrack[2], -1, 0.05)
 
       def next_stage(self):  # Code for when the next stage is clicked            
-            button.imgdisp = 1
             self.stage += 1
-            print("Stage: "  + str(self.stage))
             self.enemy_count = 0
             self.dead_enemy_count = 0
             if self.world == 1:
@@ -644,7 +643,8 @@ class EventHandler():
             self.enemy_count = 0
             self.dead_enemy_count = 0
             self.stage = 1
- 
+            self.world = 0
+            
             # Destroy any enemies or items lying around
             for group in Enemies, Items:
                   for entity in group:
@@ -652,17 +652,14 @@ class EventHandler():
              
             # Bring back normal backgrounds
             castle.hide = False
-            background.bgimage = pygame.image.load("images/Backgrounds/Background.png")
-            ground.image = pygame.image.load("images/Grounds/Ground.png")
-
-      def next_stage(self):  # Code for when the next stage is clicked
-            button.imgdisp = 1
-            self.stage += 1
+            background.bgimage = pygame.image.load("images/Backgrounds/Homepage.png").convert_alpha()
+            ground.image = pygame.image.load("images/Grounds/L1.png").convert_alpha()
+            mmanager.playsoundtrack(soundtrack[0], -1, 0.5)
 
 class HealthBar(pygame.sprite.Sprite):
       def __init__(self):
             super().__init__()
-            self.image = pygame.image.load("images/Health/heart5.png")
+            self.image = pygame.image.load("images/Health/heart5.png").convert_alpha()
  
       def render(self):
             displaysurface.blit(self.image, (10,10))
@@ -679,7 +676,7 @@ class StageDisplay(pygame.sprite.Sprite):
 
       def move_display(self):
             # Create the text to be displayed
-            self.text = headingfont.render("STAGE: " + str(handler.stage) , True , color_dark)
+            self.text = headingfont.render("STAGE: " + str(handler.stage) , True , color_light)
             if self.posx < 720:
                   self.posx += 5
                   displaysurface.blit(self.text, (self.posx, self.posy))
@@ -689,7 +686,7 @@ class StageDisplay(pygame.sprite.Sprite):
                   self.posy = 100
 
       def stage_clear(self):
-            self.text = headingfont.render("STAGE CLEAR!", True , color_dark)
+            self.text = headingfont.render("STAGE CLEAR!", True , color_light)
             button.imgdisp = 0
             if self.posx < 720:
                   self.posx += 10
@@ -702,7 +699,7 @@ class StageDisplay(pygame.sprite.Sprite):
 class StatusBar(pygame.sprite.Sprite):
       def __init__(self):
             super().__init__()
-            self.surf = pygame.Surface((90, 66))
+            self.surf = pygame.Surface((100, 66))
             self.rect = self.surf.get_rect(center = (500, 10))
 
       def update_draw(self):
@@ -721,8 +718,8 @@ class StatusBar(pygame.sprite.Sprite):
 class Item(pygame.sprite.Sprite):
       def __init__(self, itemtype):
             super().__init__()
-            if itemtype == 1: self.image = pygame.image.load("images/Items/heart.png")
-            elif itemtype == 2: self.image = pygame.image.load("images/Items/coin.png")
+            if itemtype == 1: self.image = pygame.image.load("images/Items/heart.png").convert_alpha()
+            elif itemtype == 2: self.image = pygame.image.load("images/Items/coin.png").convert_alpha()
             self.rect = self.image.get_rect()
             self.type = itemtype
             self.posx = 0
@@ -742,7 +739,7 @@ class Item(pygame.sprite.Sprite):
                         health.image = health_ani[player.health]
                         self.kill()
                   if self.type == 2:
-                        # handler.money += 1
+                        handler.money += 1
                         self.kill()
 
 class PButton(pygame.sprite.Sprite):
@@ -753,19 +750,19 @@ class PButton(pygame.sprite.Sprite):
  
       def render(self, num):
             if (num == 0):
-                  self.image = pygame.image.load("images/Buttons/home_small.png")
+                  self.image = pygame.image.load("images/Buttons/home_small.png").convert_alpha()
             elif (num == 1):
                   if cursor.wait == 0:
-                        self.image = pygame.image.load("images/Buttons/pause_small.png")
+                        self.image = pygame.image.load("images/Buttons/pause_small.png").convert_alpha()
                   else:
-                        self.image = pygame.image.load("images/Buttons/play_small.png")
+                        self.image = pygame.image.load("images/Buttons/play_small.png").convert_alpha()
                                      
             displaysurface.blit(self.image, self.vec)
 
 class Cursor(pygame.sprite.Sprite):
       def __init__(self):
             super().__init__()
-            self.image = pygame.image.load("images/Buttons/cursor.png")
+            self.image = pygame.image.load("images/Buttons/cursor.png").convert_alpha()
             self.rect = self.image.get_rect()
             self.wait = 0
  
@@ -788,9 +785,9 @@ class FireBall(pygame.sprite.Sprite):
             super().__init__()
             self.direction  = player.direction
             if self.direction == "RIGHT":
-                  self.image = pygame.image.load("images/Fireballs/fireball1_R.png")
+                  self.image = pygame.image.load("images/Fireballs/fireball1_R.png").convert_alpha()
             else:
-                  self.image = pygame.image.load("images/Fireballs/fireball1_L.png")           
+                  self.image = pygame.image.load("images/Fireballs/fireball1_L.png").convert_alpha()
             self.rect = self.image.get_rect(center = player.pos)
             self.rect.x = player.pos.x
             self.rect.y = player.pos.y - 40
@@ -800,10 +797,10 @@ class FireBall(pygame.sprite.Sprite):
             # Runs while the fireball is still within the screen w/ extra margin
             if -10 < self.rect.x < 710:
                   if self.direction == "RIGHT":
-                        self.image = pygame.image.load("images/Fireballs/fireball1_R.png")
+                        self.image = pygame.image.load("images/Fireballs/fireball1_R.png").convert_alpha()
                         displaysurface.blit(self.image, self.rect)
                   else:
-                        self.image = pygame.image.load("images/Fireballs/fireball1_L.png")
+                        self.image = pygame.image.load("images/Fireballs/fireball1_L.png").convert_alpha()
                         displaysurface.blit(self.image, self.rect)
                          
                   if self.direction == "RIGHT":
@@ -818,26 +815,31 @@ class FireBall(pygame.sprite.Sprite):
 class Bolt(pygame.sprite.Sprite):
       def __init__(self, x, y, d):
             super().__init__()
-            self.image = pygame.image.load("images/Fireballs/crc.png")
+            self.image = pygame.image.load("images/Fireballs/crc.png").convert_alpha()
             self.rect = self.image.get_rect()
             self.rect.x = x + 15
             self.rect.y = y + 20
             self.direction = d
 
+            if self.direction == 0:
+                  self.rect.x += 20
+            else:
+                  self.rect.x -= 20
+
       def fire(self):
             # Runs while the fireball is still within the screen w/ extra margin
             if -10 < self.rect.x < 710:
                   if self.direction == 0:
-                        self.image = pygame.image.load("images/Fireballs/crc.png")
+                        self.image = pygame.image.load("images/Fireballs/crc.png").convert_alpha()
                         displaysurface.blit(self.image, self.rect)
                   else:
-                        self.image = pygame.image.load("images/Fireballs/crc.png")
+                        self.image = pygame.image.load("images/Fireballs/crc.png").convert_alpha()
                         displaysurface.blit(self.image, self.rect)
                          
-                  if self.direction == 0:
-                        self.rect.move_ip(12, 0)
-                  else:
-                        self.rect.move_ip(-12, 0)   
+                  if self.direction == 0 and cursor.wait == 0:
+                        self.rect.move_ip(10, 0)
+                  elif self.direction == 1 and cursor.wait == 0:
+                        self.rect.move_ip(-10, 0) 
             else:
                   self.kill()
        
@@ -857,6 +859,7 @@ background = Background()
 button = PButton()
 cursor = Cursor() 
 ground = Ground()
+
 ground_group = pygame.sprite.Group()
 ground_group.add(ground)
  
@@ -874,7 +877,7 @@ Bolts = pygame.sprite.Group()
 
 hit_cooldown = pygame.USEREVENT + 1
  
-while True:
+while 1:
     player.gravity_check()
     mouse = pygame.mouse.get_pos()
    
@@ -949,7 +952,7 @@ while True:
                        player.attacking = True
                        fireball = FireBall()
                        Fireballs.add(fireball)
-                       mmanager.playsound(fsound, 0.3)
+                       mmanager.playsound(fsound, 2.0)
 
     # Player related functions
     player.update()
@@ -963,6 +966,12 @@ while True:
     button.render(button.imgdisp)
     cursor.hover()
 
+    # Render stage display
+    if stage_display.display == True:
+          stage_display.move_display()
+    if stage_display.clear == True:
+          stage_display.stage_clear()          
+
     # Rendering Sprites
     castle.update()
     if player.health > 0:
@@ -974,10 +983,15 @@ while True:
     status_bar.update_draw()
     handler.update()
 
+    # Render Items
+    for i in Items:
+          i.render()
+          i.update()
+
     # Fire Any Fireballs
     for ball in Fireballs:
           ball.fire()
-
+            
     for bolt in Bolts:
           bolt.fire()
 
@@ -985,17 +999,6 @@ while True:
           entity.update()
           entity.move()
           entity.render()
-
-    # Render stage display
-    if stage_display.display == True:
-          stage_display.move_display()
-    if stage_display.clear == True:
-          stage_display.stage_clear()          
-
-    # Render Items
-    for i in Items:
-          i.render()
-          i.update()
 
     pygame.display.update()      
     FPS_CLOCK.tick(FPS)
