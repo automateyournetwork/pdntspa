@@ -552,8 +552,8 @@ class EventHandler():
              
       def world3(self):
             self.root.destroy()
-            background.bgimage = pygame.image.load("images/Backgrounds/desert.jpg").convert_alpha()
-            ground.image = pygame.image.load("images/Grounds/desert_L1.png").convert_alpha()
+            background.bgimage = pygame.image.load("images/Backgrounds/L3.png").convert_alpha()
+            ground.image = pygame.image.load("images/Grounds/desert_L3.png").convert_alpha()
             pygame.time.set_timer(self.enemy_generation3, 1000)
             button.imgdisp = 1
             castle.hide = True
