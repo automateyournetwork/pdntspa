@@ -17,7 +17,10 @@ RUN echo "==> Installing pyGame ...." \
 RUN echo "==> Installing numply ...." \  
   && pip install numpy
 
+RUN echo "==> Installing numply ...." \
+  && sudo apt-get -y install python3-tk
+
 RUN echo "==> Git Clone..." \
   && git clone https://github.com/automateyournetwork/pdntspa.git
 
-CMD ["/pdntspa/PDNTSPA/python PDNTSPA.py"]
+CMD  [ "python3", "./pdntspa/PDNTSPA/PDNTSPA.py" ]

@@ -27,6 +27,8 @@ virtualenv please
 
 (please) C:\pip install pygame
 (please) C:\pip install numpy
+(please) C:\sudo apt-get -y install python3-tk
+
 
 ```
 
