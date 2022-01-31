@@ -13,7 +13,6 @@ os.environ['SDL_AUDIODRIVER'] = 'dsp'
 # sound freq, size, channel, buffsize
 pygame.mixer.pre_init(44100, 16, 1, 512)
 pygame.init()  # Begin pygame
-pygame.mixer.init()  # Initialize Mixer
 
 #flags = FULLSCREEN | DOUBLEBUF
 
