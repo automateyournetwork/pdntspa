@@ -1,6 +1,5 @@
 import os
 import pygame
-from pygame import mixer
 from pygame.locals import *
 import sys
 import random
@@ -12,15 +11,17 @@ from MusicManager import MusicManager
 os.environ['SDL_AUDIODRIVER'] = 'dsp'
 
 # sound freq, size, channel, buffsize
-mixer.pre_init(44100, 16, 1, 512)
+pygame.mixer.pre_init(44100, 16, 1, 512)
 pygame.init()  # Begin pygame
+pygame.mixer.init()  # Initialize Mixer
+
 #flags = FULLSCREEN | DOUBLEBUF
 
 # Music and Sound
 soundtrack = ["sounds/hold.wav", "sounds/physical.mid", "sounds/freeze_frame.mid"]
-swordtrack = [mixer.Sound("sounds/sword1.wav"), mixer.Sound("sounds/sword2.wav")]
-fsound = mixer.Sound("sounds/fireball_sound.wav")
-hit = mixer.Sound("sounds/enemy_hit.wav")
+swordtrack = [pygame.mixer.Sound("sounds/sword1.wav"), pygame.mixer.Sound("sounds/sword2.wav")]
+fsound = pygame.mixer.Sound("sounds/fireball_sound.wav")
+hit = pygame.mixer.Sound("sounds/enemy_hit.wav")
 mmanager = MusicManager()
 mmanager.playsoundtrack(soundtrack[0], -1, 1.0)
 
