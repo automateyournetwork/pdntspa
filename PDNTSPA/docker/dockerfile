@@ -23,6 +23,9 @@ RUN echo "==> Installing numply ...." \
 RUN echo "==> Sound libraries ...." \
   && apt-get install -y libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev
 
+RUN echo "==> More Sound libraries ...." \
+apt update && apt install -y alsa-base pulseaudio
+
 ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
 
 RUN echo "==> Git Clone..." \
